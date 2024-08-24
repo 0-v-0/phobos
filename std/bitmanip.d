@@ -2965,10 +2965,10 @@ if (__traits(isIntegral, T))
     Unqual!T result;
     version (LittleEndian)
         foreach_reverse (b; array)
-            result = cast() cast(T) ((result << 8) | b);
+            result = cast(Unqual!T) ((result << 8) | b);
     else
         foreach (b; array)
-            result = cast() cast(T) ((result << 8) | b);
+            result = cast(Unqual!T) ((result << 8) | b);
     return cast(T) result;
 }
 
@@ -2983,7 +2983,7 @@ if (__traits(isIntegral, T))
         foreach (i; 0 .. T.sizeof)
         {
             result[i] = cast(ubyte) tmp;
-            tmp = cast() cast(T) (tmp >>> 8);
+            tmp = cast(Unqual!T) (tmp >>> 8);
         }
     }
     else
@@ -2991,7 +2991,7 @@ if (__traits(isIntegral, T))
         foreach_reverse (i; 0 .. T.sizeof)
         {
             result[i] = cast(ubyte) tmp;
-            tmp = cast()(T) (tmp >>> 8);
+            tmp = cast(Unqual!T) (tmp >>> 8);
         }
     }
     return result;
@@ -3280,7 +3280,7 @@ if (canSwapEndianness!T && n == T.sizeof)
     assert(c == littleEndianToNative!dchar(swappedC));
 }
 
-private T endianToNativeImpl(bool swap, T, size_t n)(ubyte[n] val) @nogc nothrow pure @trusted
+private T endianToNativeImpl(bool swap, T, size_t n)(ubyte[n] val) @nogc nothrow pure @safe
 if (__traits(isIntegral, T) && n == T.sizeof)
 {
     if (!__ctfe)

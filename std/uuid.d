@@ -977,37 +977,40 @@ public struct UUID
     assert(id.toString() == "8ab3060e-2cba-4f23-b74c-b52db3bdfb46");
 }
 
+version (PHOBOS_LITE) {}
+else
+{
 /**
- * This function generates a name based (Version 3) UUID from a namespace UUID and a name.
- * If no namespace UUID was passed, the empty UUID `UUID.init` is used.
- *
- * Note:
- * The default namespaces ($(LREF dnsNamespace), ...) defined by
- * this module should be used when appropriate.
- *
- * RFC 4122 recommends to use Version 5 UUIDs (SHA-1) instead of Version 3
- * UUIDs (MD5) for new applications.
- *
- * CTFE:
- * CTFE is not supported.
- *
- * Note:
- * RFC 4122 isn't very clear on how UUIDs should be generated from names.
- * It is possible that different implementations return different UUIDs
- * for the same input, so be warned. The implementation for UTF-8 strings
- * and byte arrays used by `std.uuid` is compatible with Boost's implementation.
- * `std.uuid` guarantees that the same input to this function will generate
- * the same output at any time, on any system (this especially means endianness
- * doesn't matter).
- *
- * Note:
- * This function does not provide overloads for wstring and dstring, as
- * there's no clear answer on how that should be implemented. It could be
- * argued, that string, wstring and dstring input should have the same output,
- * but that wouldn't be compatible with Boost, which generates different output
- * for strings and wstrings. It's always possible to pass wstrings and dstrings
- * by using the ubyte[] function overload (but be aware of endianness issues!).
- */
+* This function generates a name based (Version 3) UUID from a namespace UUID and a name.
+* If no namespace UUID was passed, the empty UUID `UUID.init` is used.
+*
+* Note:
+* The default namespaces ($(LREF dnsNamespace), ...) defined by
+* this module should be used when appropriate.
+*
+* RFC 4122 recommends to use Version 5 UUIDs (SHA-1) instead of Version 3
+* UUIDs (MD5) for new applications.
+*
+* CTFE:
+* CTFE is not supported.
+*
+* Note:
+* RFC 4122 isn't very clear on how UUIDs should be generated from names.
+* It is possible that different implementations return different UUIDs
+* for the same input, so be warned. The implementation for UTF-8 strings
+* and byte arrays used by `std.uuid` is compatible with Boost's implementation.
+* `std.uuid` guarantees that the same input to this function will generate
+* the same output at any time, on any system (this especially means endianness
+* doesn't matter).
+*
+* Note:
+* This function does not provide overloads for wstring and dstring, as
+* there's no clear answer on how that should be implemented. It could be
+* argued, that string, wstring and dstring input should have the same output,
+* but that wouldn't be compatible with Boost, which generates different output
+* for strings and wstrings. It's always possible to pass wstrings and dstrings
+* by using the ubyte[] function overload (but be aware of endianness issues!).
+*/
 @safe pure nothrow @nogc UUID md5UUID(const(char[]) name, const UUID namespace = UUID.init)
 {
     return md5UUID(cast(const(ubyte[]))name, namespace);
@@ -1022,10 +1025,10 @@ public struct UUID
     hash.start();
 
     /*
-     * NOTE: RFC 4122 says namespace should be converted to big-endian.
-     * We always keep the UUID data in big-endian representation, so
-     * that's fine
-     */
+    * NOTE: RFC 4122 says namespace should be converted to big-endian.
+    * We always keep the UUID data in big-endian representation, so
+    * that's fine
+    */
     hash.put(namespace.data[]);
     hash.put(data[]);
 
@@ -1090,35 +1093,35 @@ public struct UUID
     assert(u.uuidVersion == UUID.Version.nameBasedMD5);
 }
 
- /**
- * This function generates a name based (Version 5) UUID from a namespace
- * UUID and a name.
- * If no namespace UUID was passed, the empty UUID `UUID.init` is used.
- *
- * Note:
- * The default namespaces ($(LREF dnsNamespace), ...) defined by
- * this module should be used when appropriate.
- *
- * CTFE:
- * CTFE is not supported.
- *
- * Note:
- * RFC 4122 isn't very clear on how UUIDs should be generated from names.
- * It is possible that different implementations return different UUIDs
- * for the same input, so be warned. The implementation for UTF-8 strings
- * and byte arrays used by `std.uuid` is compatible with Boost's implementation.
- * `std.uuid` guarantees that the same input to this function will generate
- * the same output at any time, on any system (this especially means endianness
- * doesn't matter).
- *
- * Note:
- * This function does not provide overloads for wstring and dstring, as
- * there's no clear answer on how that should be implemented. It could be
- * argued, that string, wstring and dstring input should have the same output,
- * but that wouldn't be compatible with Boost, which generates different output
- * for strings and wstrings. It's always possible to pass wstrings and dstrings
- * by using the ubyte[] function overload (but be aware of endianness issues!).
- */
+/**
+* This function generates a name based (Version 5) UUID from a namespace
+* UUID and a name.
+* If no namespace UUID was passed, the empty UUID `UUID.init` is used.
+*
+* Note:
+* The default namespaces ($(LREF dnsNamespace), ...) defined by
+* this module should be used when appropriate.
+*
+* CTFE:
+* CTFE is not supported.
+*
+* Note:
+* RFC 4122 isn't very clear on how UUIDs should be generated from names.
+* It is possible that different implementations return different UUIDs
+* for the same input, so be warned. The implementation for UTF-8 strings
+* and byte arrays used by `std.uuid` is compatible with Boost's implementation.
+* `std.uuid` guarantees that the same input to this function will generate
+* the same output at any time, on any system (this especially means endianness
+* doesn't matter).
+*
+* Note:
+* This function does not provide overloads for wstring and dstring, as
+* there's no clear answer on how that should be implemented. It could be
+* argued, that string, wstring and dstring input should have the same output,
+* but that wouldn't be compatible with Boost, which generates different output
+* for strings and wstrings. It's always possible to pass wstrings and dstrings
+* by using the ubyte[] function overload (but be aware of endianness issues!).
+*/
 @safe pure nothrow @nogc UUID sha1UUID(scope const(char)[] name, scope const UUID namespace = UUID.init)
 {
     return sha1UUID(cast(const(ubyte[]))name, namespace);
@@ -1133,10 +1136,10 @@ public struct UUID
     sha.start();
 
     /*
-     * NOTE: RFC 4122 says namespace should be converted to big-endian.
-     * We always keep the UUID data in big-endian representation, so
-     * that's fine
-     */
+    * NOTE: RFC 4122 says namespace should be converted to big-endian.
+    * We always keep the UUID data in big-endian representation, so
+    * that's fine
+    */
     sha.put(namespace.data[]);
     sha.put(data[]);
 
@@ -1195,6 +1198,7 @@ public struct UUID
     assert(u == correct);
     assert(u.variant == UUID.Variant.rfc4122);
     assert(u.uuidVersion == UUID.Version.nameBasedSHA1);
+}
 }
 
 /**

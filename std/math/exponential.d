@@ -3211,6 +3211,8 @@ double log(double x) @safe pure nothrow @nogc { return __ctfe ? cast(double) log
 pragma(inline, true)
 float log(float x) @safe pure nothrow @nogc { return __ctfe ? cast(float) log(cast(real) x) : logImpl(x); }
 
+version (PHOBOS_LITE) {
+} else {
 // @@@DEPRECATED_[2.112.0]@@@
 deprecated("`std.math.exponential.log` called with argument types `(int)` matches both "
            ~ "`log(real)`, `log(double)`, and `log(float)`. Cast argument to floating point type instead.")
@@ -3227,6 +3229,7 @@ real log(long x) @safe pure nothrow @nogc { return log(cast(real) x); }
 deprecated("`std.math.exponential.log` called with argument types `(ulong)` matches both "
            ~ "`log(real)`, `log(double)`, and `log(float)`. Cast argument to floating point type instead.")
 real log(ulong x) @safe pure nothrow @nogc { return log(cast(real) x); }
+}
 
 ///
 @safe pure nothrow @nogc unittest
@@ -3476,6 +3479,8 @@ double log10(double x) @safe pure nothrow @nogc { return __ctfe ? cast(double) l
 pragma(inline, true)
 float log10(float x) @safe pure nothrow @nogc { return __ctfe ? cast(float) log10(cast(real) x) : log10Impl(x); }
 
+version (PHOBOS_LITE) {
+} else {
 // @@@DEPRECATED_[2.112.0]@@@
 deprecated("`std.math.exponential.log10` called with argument types `(int)` matches both "
            ~ "`log10(real)`, `log10(double)`, and `log10(float)`. Cast argument to floating point type instead.")
@@ -3492,6 +3497,7 @@ real log10(long x) @safe pure nothrow @nogc { return log10(cast(real) x); }
 deprecated("`std.math.exponential.log10` called with argument types `(ulong)` matches both "
            ~ "`log10(real)`, `log10(double)`, and `log10(float)`. Cast argument to floating point type instead.")
 real log10(ulong x) @safe pure nothrow @nogc { return log10(cast(real) x); }
+}
 
 ///
 @safe pure nothrow @nogc unittest
@@ -3732,6 +3738,8 @@ double log1p(double x) @safe pure nothrow @nogc { return __ctfe ? cast(double) l
 pragma(inline, true)
 float log1p(float x) @safe pure nothrow @nogc { return __ctfe ? cast(float) log1p(cast(real) x) : log1pImpl(x); }
 
+version (PHOBOS_LITE) {
+} else {
 // @@@DEPRECATED_[2.112.0]@@@
 deprecated("`std.math.exponential.log1p` called with argument types `(int)` matches both "
            ~ "`log1p(real)`, `log1p(double)`, and `log1p(float)`. Cast argument to floating point type instead.")
@@ -3748,6 +3756,7 @@ real log1p(long x) @safe pure nothrow @nogc { return log1p(cast(real) x); }
 deprecated("`std.math.exponential.log1p` called with argument types `(ulong)` matches both "
            ~ "`log1p(real)`, `log1p(double)`, and `log1p(float)`. Cast argument to floating point type instead.")
 real log1p(ulong x) @safe pure nothrow @nogc { return log1p(cast(real) x); }
+}
 
 ///
 @safe pure unittest
@@ -3913,6 +3922,8 @@ double log2(double x) @safe pure nothrow @nogc { return __ctfe ? cast(double) lo
 pragma(inline, true)
 float log2(float x) @safe pure nothrow @nogc { return __ctfe ? cast(float) log2(cast(real) x) : log2Impl(x); }
 
+version (PHOBOS_LITE) {
+} else {
 // @@@DEPRECATED_[2.112.0]@@@
 deprecated("`std.math.exponential.log2` called with argument types `(int)` matches both "
            ~ "`log2(real)`, `log2(double)`, and `log2(float)`. Cast argument to floating point type instead.")
@@ -3929,6 +3940,7 @@ real log2(long x) @safe pure nothrow @nogc { return log2(cast(real) x); }
 deprecated("`std.math.exponential.log2` called with argument types `(ulong)` matches both "
            ~ "`log2(real)`, `log2(double)`, and `log2(float)`. Cast argument to floating point type instead.")
 real log2(ulong x) @safe pure nothrow @nogc { return log2(cast(real) x); }
+}
 
 ///
 @safe unittest

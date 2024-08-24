@@ -673,6 +673,9 @@ private:
 }
 
 
+version (PHOBOS_LITE) {
+} else {
+
 package(std) string uniqueTempPath() @safe
 {
     import std.file : tempDir;
@@ -682,7 +685,7 @@ package(std) string uniqueTempPath() @safe
     return buildPath(tempDir(), "std.process temporary file " ~
         randomUUID().toString());
 }
-
+}
 
 version (iOSDerived) {}
 else:
@@ -2907,7 +2910,8 @@ private:
     assert(!p.writeEnd.isOpen);
 }
 
-
+version (PHOBOS_LITE) {
+} else {
 /**
 Starts a new process, creating pipes to redirect its standard
 input, output and/or error streams.
@@ -3499,6 +3503,8 @@ private auto executeImpl(alias pipeFunc, Cmd, ExtraPipeFuncArgs...)(
 
         Tuple!(int, string) ret3 = execute(["dummy", "arg"]);
     }
+}
+
 }
 
 /// An exception that signals a problem with starting or waiting for a process.
@@ -4230,6 +4236,9 @@ version (Posix)
     import core.sys.posix.stdlib;
 }
 
+version (PHOBOS_LITE) {
+} else {
+
 private void toAStringz(in string[] a, const(char)**az)
 {
     import std.string : toStringz;
@@ -4566,4 +4575,5 @@ else
     TestScript prog = `if [ "$1" != "` ~ url ~ `" ]; then exit 1; fi`;
     environment["BROWSER"] = prog.path;
     browse(url);
+}
 }

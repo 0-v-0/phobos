@@ -172,6 +172,8 @@ private size_t cacheLineSizeImpl() @nogc nothrow @trusted
     assert(cacheLineSize == cacheLineSizeImpl);
 }
 
+version (PHOBOS_LITE) {
+} else {
 /* Atomics code.  These forward to core.atomic, but are written like this
    for two reasons:
 
@@ -935,6 +937,8 @@ if (is(typeof(fun(args))) && isSafeTask!F)
     return ret;
 }
 
+}
+
 /**
 The total number of CPU cores available on the current machine, as reported by
 the operating system.
@@ -1049,6 +1053,9 @@ uint totalCPUsImpl() @nogc nothrow @trusted
         static assert(0, "Don't know how to get N CPUs on this OS.");
     }
 }
+
+version (PHOBOS_LITE) {
+} else {
 
 /*
 This class serves two purposes:
@@ -4922,4 +4929,6 @@ version (parallelismStressTest)
     // ensure compilation
     try foreach (rnd; rndGen.parallel) break;
     catch (ParallelForeachError e) {}
+}
+
 }
