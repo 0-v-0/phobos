@@ -1513,7 +1513,7 @@ template EncoderInstance(CharType : wchar)
     }
     do
     {
-        return (c < 0x10000) ? 1 : 2;
+        return c < 0x10000 ? 1 : 2;
     }
 
     void encodeViaWrite()(dchar c)
@@ -2559,6 +2559,8 @@ class UnrecognizedEncodingException : EncodingException
     private this(string msg) @safe pure { super(msg); }
 }
 
+version (PHOBOS_LITE) {
+} else {
 /** Abstract base class of all encoding schemes */
 abstract class EncodingScheme
 {
@@ -2622,11 +2624,14 @@ abstract class EncodingScheme
         static bool registerDefaultEncodings()
         {
             EncodingScheme.register!EncodingSchemeASCII;
-            EncodingScheme.register!EncodingSchemeLatin1;
-            EncodingScheme.register!EncodingSchemeLatin2;
-            EncodingScheme.register!EncodingSchemeWindows1250;
-            EncodingScheme.register!EncodingSchemeWindows1251;
-            EncodingScheme.register!EncodingSchemeWindows1252;
+            version (PHOBOS_LITE) {
+            } else {
+                EncodingScheme.register!EncodingSchemeLatin1;
+                EncodingScheme.register!EncodingSchemeLatin2;
+                EncodingScheme.register!EncodingSchemeWindows1250;
+                EncodingScheme.register!EncodingSchemeWindows1251;
+                EncodingScheme.register!EncodingSchemeWindows1252;
+            }
             EncodingScheme.register!EncodingSchemeUtf8;
             EncodingScheme.register!EncodingSchemeUtf16Native;
             EncodingScheme.register!EncodingSchemeUtf32Native;
@@ -3680,6 +3685,7 @@ class EncodingSchemeUtf32Native : EncodingScheme
     assert(ub.length == 8);
 }
 
+}
 //=============================================================================
 
 
