@@ -37,7 +37,6 @@ module etc.c.curl;
 
 import core.stdc.config;
 import core.stdc.time;
-import std.socket;
 
 // linux
 import core.sys.posix.sys.socket;
@@ -111,16 +110,17 @@ alias curl_off_t = long;
 ///
 alias CURL = void;
 
-/// jdrewsen - Get socket alias from std.socket
-alias curl_socket_t = socket_t;
-
 /// jdrewsen - Would like to get socket error constant from std.socket by it is private atm.
 version (Windows)
 {
+   alias curl_socket_t = SOCKET;
   import core.sys.windows.windows, core.sys.windows.winsock2;
   enum CURL_SOCKET_BAD = SOCKET_ERROR;
 }
-version (Posix) enum CURL_SOCKET_BAD = -1;
+version (Posix) {
+   alias curl_socket_t = int;
+   enum CURL_SOCKET_BAD = -1;
+}
 
 ///
 extern (C) struct curl_httppost

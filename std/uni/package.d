@@ -712,7 +712,7 @@ import std.traits : isConvertibleToString, isIntegral, isSomeChar,
     isSomeString, Unqual, isDynamicArray;
 // debug = std_uni;
 
-import std.internal.unicode_tables; // generated file
+//import std.internal.unicode_tables; // generated file
 
 debug(std_uni) import std.stdio; // writefln, writeln
 
@@ -1124,6 +1124,7 @@ private:
         assert(m1.slice!(3)[fn4(i)] == fn4(i));
     }
 }
+pragma(LDC_no_typeinfo):
 
 size_t spaceFor(size_t _bits)(size_t new_len) @safe pure nothrow @nogc
 {
@@ -6770,6 +6771,8 @@ struct UnicodeSetParser(Range)
         return loadAny(name);
     }
 
+    version (PHOBOS_LITE) {
+    } else {
     /**
         Narrows down the search for sets of $(CODEPOINTS) to all Unicode blocks.
 
@@ -6846,6 +6849,8 @@ struct UnicodeSetParser(Range)
             assert(leadingVowel[vowel]);
         assert(leadingVowel == unicode.hangulSyllableType.L);
     }
+
+}
 
     //parse control code of form \cXXX, c assumed to be the current symbol
     static package(std) dchar parseControlCode(Parser)(ref Parser p)
@@ -7537,6 +7542,9 @@ if (isInputRange!Range && is(immutable ElementType!Range == immutable dchar))
     assert("абвгд"d.byCodePoint.length == 5);
 }
 
+version (PHOBOS_LITE) {
+} else {
+
 /++
     $(P A structure designed to effectively pack $(CHARACTERS)
     of a $(CLUSTER).
@@ -7917,6 +7925,7 @@ static assert(Grapheme.sizeof == size_t.sizeof*4);
 @safe unittest
 {
     int[Grapheme] aa;
+}
 }
 
 /++
@@ -8391,6 +8400,8 @@ package(std) auto simpleCaseFoldings(dchar ch) @safe
     });
 }
 
+version (PHOBOS_LITE) {
+} else {
 /++
     $(P Returns the $(S_LINK Combining class, combining class) of `ch`.)
 +/
@@ -8421,6 +8432,7 @@ ubyte combiningClass(dchar ch) @safe pure nothrow @nogc
     assert(combiningClass('\u0300') == 230);
     assert(combiningClass('\u0317') == 220);
     assert(combiningClass('\u1939') == 222);
+}
 }
 
 /// Unicode character decomposition type.
@@ -8456,6 +8468,9 @@ enum {
 +/
 public dchar compose(dchar first, dchar second) pure nothrow @safe
 {
+version (PHOBOS_LITE) {
+    return dchar.init;
+} else {
     import std.algorithm.iteration : map;
     import std.internal.unicode_comp : compositionTable, composeCntShift, composeIdxMask;
     import std.range : assumeSorted, stride;
@@ -8474,6 +8489,7 @@ public dchar compose(dchar first, dchar second) pure nothrow @safe
         return dchar.init;
     return compositionTable[(idx+target)*2 + 1];
 }
+}
 
 ///
 @safe unittest
@@ -8485,6 +8501,9 @@ public dchar compose(dchar first, dchar second) pure nothrow @safe
     // thus the following doesn't compose
     assert(compose('\u0308', 'A') == dchar.init);
 }
+
+version (PHOBOS_LITE) {
+} else {
 
 /++
     Returns a full $(S_LINK Canonical decomposition, Canonical)
@@ -8693,6 +8712,8 @@ dchar composeJamo(dchar lead, dchar vowel, dchar trailing=dchar.init) pure nothr
     assert(composeJamo('\u1111', '\u1171', ' ') == '\uD4CC');
     assert(composeJamo('\u1111', 'A') == dchar.init);
     assert(composeJamo('A', '\u1171') == dchar.init);
+}
+
 }
 
 /**
@@ -10782,6 +10803,8 @@ private:
         return res;
     }
 
+version (PHOBOS_LITE) {
+} else {
     // tables below are used for composition/decomposition
     auto combiningClassTrie()
     {
@@ -10810,6 +10833,7 @@ private:
         static immutable res = asTrie(compositionJumpTrieEntries);
         return res;
     }
+}
 
     //case conversion tables
     auto toUpperIndexTrie() { static immutable res = asTrie(toUpperIndexTrieEntries); return res; }

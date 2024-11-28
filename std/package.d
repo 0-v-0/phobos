@@ -28,14 +28,36 @@ module std;
     assert(10.iota.map!(a => pow(2, a)).sum == 1023);
 }
 
+version(PHOBOS_LITE) {}
+else
+{
+public import
+ std.base64,
+ std.bitmanip,
+ std.checkedint,
+ std.csv,
+ std.digest,
+ std.getopt,
+ std.json,
+ std.mmfile,
+ std.net.curl,
+ std.parallelism,
+ std.stdint,
+ std.socket,
+ std.zip,
+ std.zlib;
+}
+
+version (PHOBOS_LIGHTER) {}
+else
+public import std.regex;
+
 public import
  std.algorithm,
  std.array,
  std.ascii,
  std.base64,
  std.bigint,
- std.bitmanip,
- std.checkedint,
  std.compiler,
  std.complex,
  std.concurrency,
@@ -58,7 +80,6 @@ public import
  std.mathspecial,
  std.meta,
  std.mmfile,
- std.net.curl,
  std.net.isemail,
  std.numeric,
  std.parallelism,
@@ -68,8 +89,6 @@ public import
  std.range,
  std.regex,
  std.signals,
- std.socket,
- std.stdint,
  std.stdio,
  std.string,
  std.sumtype,

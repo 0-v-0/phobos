@@ -47,7 +47,9 @@ version (Windows)
     import core.stdc.time : time_t;
     import core.sys.windows.winbase;
     import core.sys.windows.winsock2;
-    import std.windows.registry;
+    version(PHOBOS_LITE) {}
+    else
+        import std.windows.registry;
 
     // Uncomment and run unittests to print missing Windows TZ translations.
     // Please subscribe to Microsoft Daylight Saving Time & Time Zone Blog
@@ -2991,7 +2993,8 @@ else version (Windows)
             return _tzToUTC(&_tzInfo, adjTime, hasDST);
         }
 
-
+version(PHOBOS_LITE) {}
+else{
         static immutable(WindowsTimeZone) getTimeZone(string name) @trusted
         {
             scope baseKey = Registry.localMachine.getKey(`Software\Microsoft\Windows NT\CurrentVersion\Time Zones`);
@@ -3068,6 +3071,7 @@ else version (Windows)
             foreach (tzName; tzNames)
                 assertNotThrown!DateTimeException(testWTZSuccess(tzName));
         }
+}
 
 
     private:
