@@ -115,6 +115,8 @@ import std.traits;
     assert(received == "Received the number 42");
 }
 
+version (PHOBOS_LIGHTER) {}
+else
 private
 {
     bool hasLocalAliasing(Types...)()
@@ -266,6 +268,33 @@ private
     }
 }
 
+version (PHOBOS_LIGHTER) {
+    class MessageBox{}
+
+    struct ThreadInfo
+    {
+        Tid ident;
+        bool[Tid] links;
+        Tid owner;
+
+        /**
+        * Gets a thread-local instance of `ThreadInfo`.
+        *
+        * Gets a thread-local instance of `ThreadInfo`, which should be used as the
+        * default instance when info is requested for a thread not created by the
+        * `Scheduler`.
+        */
+        static @property ref thisInfo() nothrow
+        {
+            static ThreadInfo val;
+            return val;
+        }
+    }
+
+    alias thisInfo = ThreadInfo.thisInfo;
+}
+else{
+
 static ~this()
 {
     thisInfo.cleanup();
@@ -363,7 +392,7 @@ class TidMissingException : Exception
     ///
     mixin basicExceptionCtors;
 }
-
+}
 
 // Thread ID
 
@@ -435,6 +464,9 @@ public:
 
     return trus();
 }
+
+version (PHOBOS_LIGHTER) {}
+else{
 
 /**
  * Return the `Tid` of the thread which spawned the caller's thread.
@@ -2650,6 +2682,8 @@ private
     scheduler = new ThreadScheduler;
     simpleTest();
     scheduler = null;
+}
+
 }
 
 private @property shared(Mutex) initOnceLock()
