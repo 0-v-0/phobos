@@ -27,15 +27,15 @@ pragma(lib, "advapi32.lib");
     // or doing gnarly initonce work.
     alias fptr_t = extern(Windows) BOOL function(HANDLE, PBOOL);
     auto hKernel = GetModuleHandleA("kernel32");
-    auto IsWow64Process = cast(fptr_t) GetProcAddress(hKernel, "IsWow64Process");
     BOOL bIsWow64;
-    result = IsWow64Process && IsWow64Process(GetCurrentProcess(), &bIsWow64) && bIsWow64;
+    result = IsWow64Process(GetCurrentProcess(), &bIsWow64) && bIsWow64;
     return result > 0;
 }
 
 HMODULE hAdvapi32 = null;
 extern (Windows)
 {
+    BOOL IsWow64Process(HANDLE hProcess, PBOOL Wow64Process);
     LONG function(
         scope const HKEY hkey, scope const LPCWSTR lpSubKey,
         scope const REGSAM samDesired, scope const DWORD reserved) pRegDeleteKeyExW;

@@ -75,6 +75,8 @@ if (is(Unqual!Char == Char))
      */
     bool dynamicSeparatorChar = false;
 
+version (PHOBOS_LITE) {
+} else {
     /**
        Set to `DYNAMIC` when the separator character is supplied at runtime.
 
@@ -92,7 +94,7 @@ if (is(Unqual!Char == Char))
     // @@@DEPRECATED_[2.107.0]@@@
     deprecated("separatorCharPos will be removed in 2.107.0. Please use dynamicSeparatorChar instead.")
     void separatorCharPos(int value) { dynamicSeparatorChar = value == DYNAMIC; }
-
+}
     /**
        Character to use as separator.
 

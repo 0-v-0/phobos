@@ -196,6 +196,8 @@ in a `Hook`, otherwise the built-in hashing is used.)
 Source: $(PHOBOSSRC std/checkedint.d)
 */
 module std.checkedint;
+
+pragma(LDC_no_typeinfo):
 import std.traits : isFloatingPoint, isIntegral, isNumeric, isUnsigned, Unqual;
 
 ///
@@ -2911,7 +2913,7 @@ if (isIntegral!L && isIntegral!R)
         static if (!isUnsigned!R)
             return rhs == 1
                 ? lhs
-                : (rhs == -1 && (lhs == 1 || lhs == -1)) ? lhs : 0;
+                : rhs == -1 && (lhs == 1 || lhs == -1) ? lhs : 0;
         else
             return lhs;
     }

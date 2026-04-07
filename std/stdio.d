@@ -3603,10 +3603,15 @@ void main()
 */
     @property ulong size() @safe
     {
-        import std.exception : collectException;
-
         ulong pos = void;
-        if (collectException(pos = tell)) return ulong.max;
+        try
+        {
+            pos = tell;
+        }
+        catch (Exception)
+        {
+            return ulong.max;
+        }
         scope(exit) seek(pos);
         seek(0, SEEK_END);
         return tell;

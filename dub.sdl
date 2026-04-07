@@ -1,0 +1,46 @@
+name "phobos"
+license "BSL-1.0"
+description "D Standard Library"
+authors "DLang Community"
+copyright "Copyright © 1999-2024, The D Language Foundation"
+
+configuration "library" {
+    targetType "staticLibrary"
+    sourcePaths "phobos"
+    targetPath "generated-lib"
+    #excludedSourceFiles "unittest.d" "test/**" "std/**" "tools/**" "etc/**"
+}
+
+configuration "lite" {
+    dflags "-dip1000"
+    versions "PHOBOS_LITE"
+    sourcePaths "std" "etc/c"
+    excludedSourceFiles "etc/c/odbc/*.d" "etc/c/zlib.d"
+    excludedSourceFiles "std/base64.d" "std/bitmanip.d" "std/csv.d" "std/datetime/stopwatch.d" "std/digest/*.d"
+    excludedSourceFiles "std/experimental/allocator/showcase.d" "std/experimental/allocator/building_blocks/*.d" "std/experimental/checkedint.d" "std/experimental/logger/*.d"
+    excludedSourceFiles "std/getopt.d" "std/int128.d"
+    excludedSourceFiles "std/internal/attributes.d" "std/internal/digest/*.d" "std/internal/test/*.d" "std/internal/windows/advapi32.d"
+    excludedSourceFiles "std/json.d" "std/mmfile.d" "std/net/curl.d" "std/outbuffer.d" "std/regex/*.d"
+    excludedSourceFiles "std/socket.d" "std/stdint.d" "std/typetuple.d" "std/uuid.d" "std/windows/registry.d" "std/zip.d" "std/zlib.d"
+}
+
+configuration "lighter" {
+    dflags "-dip1000"
+    versions "PHOBOS_LITE" "PHOBOS_LIGHTER"
+    sourcePaths "std" "etc/c"
+    excludedSourceFiles "etc/c/odbc/*.d" "etc/c/zlib.d"
+    excludedSourceFiles "std/base64.d" "std/bitmanip.d" "std/csv.d" "std/datetime/*.d"
+    excludedSourceFiles "std/experimental/allocator/showcase.d" "std/experimental/allocator/building_blocks/*.d" "std/experimental/checkedint.d" "std/experimental/logger/*.d"
+    excludedSourceFiles "std/file.d" "std/getopt.d" "std/int128.d"
+    excludedSourceFiles "std/internal/attributes.d" "std/internal/unicode_*comp.d" "std/internal/digest/*.d" "std/internal/test/*.d" "std/internal/windows/*.d"
+    excludedSourceFiles "std/json.d" "std/logger/*.d" "std/mmfile.d" "std/net/curl.d" "std/outbuffer.d" "std/regex/*.d"
+    excludedSourceFiles "std/socket.d" "std/stdint.d" "std/typetuple.d" "std/uuid.d" "std/windows/charset.d" "std/windows/registry.d" "std/zip.d" "std/zlib.d"
+}
+
+configuration "unittest" {
+    dflags "-main"
+    targetType "executable"
+    sourcePaths "phobos"
+    targetPath "generated-lib"
+    #excludedSourceFiles "unittest.d" "test/**" "std/**" "tools/**" "etc/**"
+}
