@@ -26,7 +26,7 @@ Macros:
 
 module std.math.operations;
 
-import std.traits : CommonType, isFloatingPoint, isIntegral, Unqual;
+import std.traits : CommonType, isBoolean, isFloatingPoint, isIntegral, Unqual;
 
 // Functions for NaN payloads
 /*
@@ -1044,6 +1044,7 @@ if (isFloatingPoint!(X))
  */
 deprecated("approxEqual will be removed in 2.106.0. Please use isClose instead.")
 bool approxEqual(T, U, V)(T value, U reference, V maxRelDiff = 1e-2, V maxAbsDiff = 1e-5)
+    if (!isBoolean!T && !isBoolean!U)
 {
     import core.math : fabs;
     import std.range.primitives : empty, front, isInputRange, popFront;
@@ -1125,6 +1126,9 @@ deprecated @safe pure nothrow unittest
     float[] arr1 = [ 1.0, 2.0, 3.0 ];
     double[] arr2 = [ 1.001, 1.999, 3 ];
     assert(approxEqual(arr1, arr2));
+
+    static assert(!__traits(compiles, approxEqual(1.0, true)));
+    static assert(!__traits(compiles, approxEqual(true, 1.0)));
 }
 
 deprecated @safe pure nothrow unittest
@@ -1230,6 +1234,7 @@ deprecated @safe pure nothrow unittest
  */
 bool isClose(T, U, V = CommonType!(FloatingPointBaseType!T,FloatingPointBaseType!U))
     (T lhs, U rhs, V maxRelDiff = CommonDefaultFor!(T,U), V maxAbsDiff = 0.0)
+    if (!isBoolean!T && !isBoolean!U)
 {
     import std.range.primitives : empty, front, isInputRange, popFront;
     import std.complex : Complex;
@@ -1446,6 +1451,9 @@ bool isClose(T, U, V = CommonType!(FloatingPointBaseType!T,FloatingPointBaseType
     assert(isClose(f,f2d));
     assert(!isClose(d,f2d));
     assert(isClose(d,f2d,1e-4));
+
+    static assert(!__traits(compiles, isClose(1.0, true)));
+    static assert(!__traits(compiles, isClose(true, 1.0)));
 }
 
 package(std.math) template CommonDefaultFor(T,U)
