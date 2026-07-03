@@ -8186,12 +8186,26 @@ private int fullCasedCmp(Range)(dchar lhs, dchar rhs, ref Range rtail)
         {// OK it's a long chunk, like 'ss' for German
             dchar[3] arr = fTable(idx).seq;
             const dchar[] seq = arr[0 .. entryLen];
-            if (rhs == seq[0]
-                && rtail.skipOver(seq[1..$]))
+            if (toLower(rhs) == toLower(seq[0]))
             {
-                // note that this path modifies rtail
-                // iff we managed to get there
-                return 0;
+                auto tail = rtail;
+                bool matched = true;
+                foreach (c; seq[1 .. $])
+                {
+                    if (tail.empty || toLower(tail.front) != toLower(c))
+                    {
+                        matched = false;
+                        break;
+                    }
+                    tail.popFront();
+                }
+                if (matched)
+                {
+                    // note that this path modifies rtail
+                    // iff we managed to get there
+                    rtail = tail;
+                    return 0;
+                }
             }
         }
     }
@@ -8301,6 +8315,9 @@ if (isForwardRange!S1 && isSomeChar!(ElementEncodingType!S1)
 @safe @nogc pure nothrow unittest
 {
     assert(icmp("Rußland", "Russland") == 0);
+    assert(icmp("ß", "SS") == 0);
+    assert(icmp("ẞ", "ss") == 0);
+    assert(icmp("ẞ", "SS") == 0);
     assert(icmp("ᾩ -> \u1F70\u03B9", "\u1F61\u03B9 -> ᾲ") == 0);
 }
 
