@@ -2400,6 +2400,11 @@ if (is(T == class) || is(T == interface) || isAssociativeArray!T)
         opAssign(initializer);
     }
 
+    this(typeof(null)) pure nothrow @nogc
+    {
+        stripped = null;
+    }
+
     @property inout(T) get() @trusted pure nothrow @nogc return scope inout
     {
         return original;
@@ -2494,6 +2499,20 @@ if (is(T == class) || is(T == interface) || isDynamicArray!T || isAssociativeArr
     Rebindable!(immutable Object) r;
     static assert(__traits(compiles, r.get()));
     static assert(!__traits(compiles, &r.get()));
+}
+
+// https://github.com/dlang/phobos/issues/10071
+@safe unittest
+{
+    static struct Test {
+        Rebindable!(Object) obj;
+        Rebindable!(const Object) cobj;
+    }
+    Test t1;
+    Test t2 = Test(null);
+    t2.cobj = null;
+    Test t3 = Test(null, null);
+    assert(t3.cobj.get() is null);
 }
 
 /// ditto
