@@ -7280,7 +7280,8 @@ template isAggregateType(T)
  * that define `opApply` with a single loop variable, and builtin dynamic,
  * static and associative arrays.
  */
-enum bool isIterable(T) = is(typeof({ foreach (elem; T.init) {} }));
+enum bool isIterable(T) = is(typeof({ foreach (elem; T.init) {} }))
+    || is(T == U[], U);
 
 ///
 @safe unittest
@@ -7303,6 +7304,17 @@ enum bool isIterable(T) = is(typeof({ foreach (elem; T.init) {} }));
     static assert( isIterable!Range);
 
     static assert(!isIterable!uint);
+}
+
+// https://github.com/dlang/phobos/issues/10051
+@safe unittest
+{
+    static struct NoPostblit
+    {
+        @disable this(this);
+    }
+
+    static assert(isIterable!(NoPostblit[]));
 }
 
 /**
