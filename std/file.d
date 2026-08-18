@@ -1213,6 +1213,98 @@ if (isConvertibleToString!R)
     return getSize!(StringTypeOf!R)(name);
 }
 
+/**
+Set size of file `name` to `size` bytes.
+
+If the file is larger than `size`, it is truncated. If the file is
+smaller than `size`, it is extended with zero bytes.
+
+Params:
+    name = string or range of characters representing the file _name
+    size = new file size in bytes
+Throws:
+    $(LREF FileException) on error (e.g., file not found).
+ */
+void truncate(R)(R name, ulong size)
+if (isSomeFiniteCharInputRange!R && !isConvertibleToString!R)
+{
+    version (Windows)
+    {
+        auto namez = name.tempCString!FSChar();
+
+        static if (isNarrowString!R && is(immutable ElementEncodingType!R == immutable char))
+            alias names = name;
+        else
+            string names = null;
+
+        HANDLE h = CreateFileW(namez,
+            GENERIC_WRITE, 0, null, OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL, HANDLE.init);
+        cenforce(h != INVALID_HANDLE_VALUE, names, namez);
+        scope(exit) CloseHandle(h);
+
+        LARGE_INTEGER li;
+        li.QuadPart = cast(long) size;
+        cenforce(SetFilePointerEx(h, li, null, FILE_BEGIN), names, namez);
+        cenforce(SetEndOfFile(h), names, namez);
+    }
+    else version (Posix)
+    {
+        auto namez = name.tempCString();
+
+        static if (isNarrowString!R && is(immutable ElementEncodingType!R == immutable char))
+            alias names = name;
+        else
+            string names = null;
+
+        auto fd = open(namez, O_WRONLY);
+        cenforce(fd >= 0, names, namez);
+        scope(exit) close(fd);
+
+        cenforce(ftruncate(fd, size) == 0, names, namez);
+    }
+}
+
+/// ditto
+void truncate(R)(auto ref R name, ulong size)
+if (isConvertibleToString!R)
+{
+    truncate!(StringTypeOf!R)(name, size);
+}
+
+@safe unittest
+{
+    import std.exception : assertThrown;
+
+    scope(exit) deleteme.remove;
+
+    // Create a file with some content
+    write(deleteme, "Hello World");
+    assert(getSize(deleteme) == 11);
+
+    // Truncate to 5 bytes
+    truncate(deleteme, 5);
+    assert(getSize(deleteme) == 5);
+    assert(read(deleteme) == "Hello");
+
+    // Extend to 15 bytes (pad with zeros)
+    truncate(deleteme, 15);
+    assert(getSize(deleteme) == 15);
+    auto content = read(deleteme);
+    assert(content[0 .. 5] == "Hello");
+    foreach (i; 5 .. 15)
+        assert(content[i] == 0);
+
+    // Truncate to 0
+    truncate(deleteme, 0);
+    assert(getSize(deleteme) == 0);
+    assert(read(deleteme).length == 0);
+
+    // Truncate with wchar range
+    truncate(deleteme.byChar, 8);
+    assert(getSize(deleteme.byChar) == 8);
+}
+
 @safe unittest
 {
     static assert(__traits(compiles, getSize(TestAliasedString("foo"))));

@@ -1,0 +1,12 @@
+Added $(REF truncate, std,file) for setting file size
+
+$(REF truncate, std,file) allows resizing a file to a specified number of bytes.
+If the file is larger than the target size, it is truncated. If it is smaller,
+it is extended with zero bytes.
+
+---
+import std.file;
+
+truncate("example.bin", 1024);
+assert(getSize("example.bin") == 1024);
+---
